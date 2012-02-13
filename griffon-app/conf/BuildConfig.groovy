@@ -2,16 +2,16 @@ griffon.project.dependency.resolution = {
     inherits("global")
     log "warn" 
     repositories {
-        griffonPlugins()
         griffonHome()
-        griffonCentral()
 
-        flatDir name: 'flamingoBuilderPluginLib', dirs: 'lib'
+        // pluginDirPath is only available when installed
+        String basePath = pluginDirPath? "${pluginDirPath}/" : ''
+        flatDir name: "flamingoBuilderPluginLib", dirs: ["${basePath}lib"]
         mavenCentral()
         mavenRepo 'http://repository.codehaus.org'
     }
     dependencies {
-        compile 'org.codehaus.griffon:flamingobuilder:0.4'
+        compile 'org.codehaus.griffon:flamingobuilder:0.5'
                 'org.pushingpixels:flamingo:4.1'
     }
 }
@@ -24,5 +24,16 @@ griffon {
     }
 }
 
-griffon.jars.destDir='target/addon'
-griffon.plugin.pack.additional.sources = ['src/gdsl']
+log4j = {
+    // Example of changing the log pattern for the default console
+    // appender:
+    appenders {
+        console name: 'stdout', layout: pattern(conversionPattern: '%d [%t] %-5p %c - %m%n')
+    }
+
+    error 'org.codehaus.griffon',
+          'org.springframework',
+          'org.apache.karaf',
+          'groovyx.net'
+    warn  'griffon'
+}
